@@ -1,0 +1,4 @@
+oracledb
+tabulate
+pytest
+python-dotenv
