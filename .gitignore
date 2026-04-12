@@ -1,0 +1,10 @@
+.env
+data/*.json
+data/*.txt
+__pycache__/
+.pytest_cache/
+venv/
+
+.claude
+.idea
+.tasks
