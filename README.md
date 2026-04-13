@@ -6,7 +6,7 @@
 
 <br>
 
-# FarmTech Solutions — Sistema de Controle de Perdas na Colheita de Cana-de-Açúc
+# FarmTech Solutions — Sistema de Controle de Perdas na Colheita de Cana-de-Açúcar
 
 ## 👨‍🎓 Integrantes:
 - <a href="https://www.linkedin.com/in/geovani-nepomoceno/">Geovani Nepomoceno — RM 570373</a>
