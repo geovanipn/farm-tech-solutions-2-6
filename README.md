@@ -1,12 +1,25 @@
-# Sistema de Controle de Perdas na Colheita de Cana-de-Açúcar
+# FIAP - Faculdade de Informática e Administração Paulista
 
-![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
-![Oracle](https://img.shields.io/badge/Oracle-Database-red?logo=oracle)
-![pytest](https://img.shields.io/badge/tested%20with-pytest-yellowgreen?logo=pytest)
+<p align="center">
+<a href="https://www.fiap.com.br/"><img src="assets/logo-fiap.png" alt="FIAP - Faculdade de Informática e Administração Paulista" border="0" width=40% height=40%></a>
+</p>
+
+<br>
+
+# FarmTech Solutions — Sistema de Controle de Perdas na Colheita de Cana-de-Açúc
+
+## 👨‍🎓 Integrantes:
+- <a href="https://www.linkedin.com/in/geovani-nepomoceno/">Geovani Nepomoceno — RM 570373</a>
+
+## 👩‍🏫 Professores:
+### Tutor(a)
+- Sabrina Otoni
+### Coordenador(a)
+- André Godoi Chiovato
 
 ---
 
-## O problema
+## 📜 Descrição
 
 O Brasil é o maior produtor mundial de cana-de-açúcar, e o estado de São Paulo concentra a maior parte dessa produção. Com a mecanização acelerada da colheita, as perdas de biomassa no campo tornaram-se um problema econômico relevante: enquanto a colheita manual apresenta perdas de aproximadamente **5%**, a colheita mecânica pode gerar perdas de **até 15%** da produção.
 
@@ -14,32 +27,20 @@ Segundo dados da **SOCICANA** (Associação dos Fornecedores de Cana de Guariba)
 
 Sem uma ferramenta que centralize e analise esses dados operacionais, os gestores de usinas e fornecedores de cana dependem de registros manuais fragmentados, o que dificulta a identificação de colhedoras ou operadores com desempenho abaixo do esperado e impede ações corretivas em tempo hábil.
 
----
+Este sistema é uma aplicação de linha de comando desenvolvida em **Python** que permite registrar, monitorar e analisar as perdas na colheita de cana-de-açúcar por talhão e por colhedora. Os dados são persistidos em um banco **Oracle Database** e também exportados em JSON para análise externa.
 
-## A solução
+O sistema emite **alertas automáticos** quando a perda medida em uma colheita supera **10%**, permitindo intervenção imediata — como verificação da regulagem da colhedora. Relatórios analíticos agrupados por colhedora, por talhão e por operador facilitam a identificação de padrões recorrentes de perda e apoiam decisões de manutenção preventiva e treinamento de equipes.
 
-Este sistema é uma aplicação de linha de comando desenvolvida em Python que permite registrar, monitorar e analisar as perdas na colheita de cana-de-açúcar por talhão e por colhedora. Os dados são persistidos em um banco Oracle e também exportados em JSON para análise externa.
+Toda a lógica de negócio (cálculo de perdas em toneladas e em reais, alertas, agrupamentos) é coberta por **testes unitários com `pytest`**, garantindo confiabilidade das métricas apresentadas.
 
-O sistema emite alertas automáticos quando a perda medida em uma colheita supera **10%**, permitindo intervenção imediata — como verificação da regulagem da colhedora. Relatórios analíticos agrupados por colhedora, por talhão e por operador facilitam a identificação de padrões recorrentes de perda e apoiam decisões de manutenção preventiva e treinamento de equipes.
+**Funcionalidades principais:**
+- Cadastro de talhões e colhedoras
+- Registro de colheitas com cálculo automático de perdas (% e R$)
+- Alertas quando a perda supera 10%
+- Relatórios por colhedora, por talhão, por operador e resumo geral
+- Exportação de registros em JSON e relatórios em `.txt`
 
-Toda a lógica de negócio (cálculo de perdas em toneladas e em reais, alertas, agrupamentos) é coberta por testes unitários com `pytest`, garantindo confiabilidade das métricas apresentadas.
-
----
-
-## Tecnologias utilizadas
-
-| Tecnologia | Finalidade |
-|---|---|
-| Python 3.11+ | Linguagem principal |
-| Oracle Database | Persistência relacional (tabelas `field`, `harvester`, `harvest_record`) |
-| `oracledb` | Driver Python para conexão com Oracle |
-| `python-dotenv` | Carregamento de variáveis de ambiente a partir do arquivo `.env` |
-| `tabulate` | Formatação de tabelas no terminal |
-| `pytest` | Suíte de testes unitários |
-
----
-
-## Conteúdo técnico coberto (cap. 3–6)
+**Conteúdo técnico coberto (cap. 3–6):**
 
 | Requisito | Onde está implementado |
 |---|---|
@@ -54,17 +55,58 @@ Toda a lógica de negócio (cálculo de perdas em toneladas e em reais, alertas,
 
 ---
 
-## Pré-requisitos
+## 📁 Estrutura de pastas
 
-- Python **3.11** ou superior
-- Oracle Database acessível (local ou remoto)
-- Variáveis de ambiente configuradas (ver seção abaixo)
+```
+farm-tech-solutions-2-6/
+├── src/
+│   ├── db/
+│   │   ├── connection.py        # Conexão Oracle via oracledb + python-dotenv
+│   │   └── schema.sql           # DDL: tabelas field, harvester, harvest_record
+│   ├── models/
+│   │   ├── field.py             # Classe Field (talhão)
+│   │   ├── harvester.py         # Classe Harvester (colhedora)
+│   │   └── harvest_record.py    # Classe HarvestRecord + cálculo de perdas
+│   ├── services/
+│   │   ├── field_service.py     # CRUD de talhões
+│   │   ├── harvester_service.py # CRUD de colhedoras
+│   │   └── harvest_service.py   # CRUD de registros + agrupamentos
+│   ├── reports/
+│   │   └── report.py            # Relatórios por colhedora, talhão, operador e resumo
+│   └── utils/
+│       ├── display.py           # Funções de saída colorida (sucesso, erro, alerta)
+│       ├── file_io.py           # Leitura/gravação de JSON e exportação de .txt
+│       └── validation.py        # Leitura validada de float, int, data e texto
+├── tests/                       # Suíte pytest (sem dependência de Oracle)
+├── data/
+│   └── records.json             # Exportação local dos registros
+├── assets/                      # Imagens e recursos estáticos
+├── docker-compose.yml           # Oracle Database Express via Docker
+├── .env.example                 # Template de variáveis de ambiente
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-## Como executar
+## 🔧 Como executar o código
 
-### 1. Criar e ativar o ambiente virtual (venv)
+### Pré-requisitos
+
+- **Python 3.11** ou superior
+- **Oracle Database** acessível — local, remoto, ou via Docker (ver seção abaixo)
+- `pip` para instalação das dependências
+
+---
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/<seu-usuario>/farm-tech-solutions-2-6.git
+cd farm-tech-solutions-2-6
+```
+
+### 2. Criar e ativar o ambiente virtual
 
 **Windows (cmd ou PowerShell):**
 ```bash
@@ -86,15 +128,13 @@ source venv/bin/activate
 
 > Para desativar o ambiente virtual em qualquer plataforma: `deactivate`
 
----
-
-### 2. Instalar dependências
+### 3. Instalar dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configurar variáveis de ambiente
+### 4. Configurar variáveis de ambiente
 
 ```bash
 # Linux/macOS
@@ -111,19 +151,19 @@ ORACLE_PASSWORD=sua_senha
 ORACLE_DSN=host:porta/service_name
 ```
 
-### 4. Criar as tabelas no banco
+### 5. Criar as tabelas no banco
 
 ```bash
 sqlplus ORACLE_USER/ORACLE_PASSWORD@ORACLE_DSN @src/db/schema.sql
 ```
 
-### 5. Executar o sistema
+### 6. Executar o sistema
 
 ```bash
 python -m src.main
 ```
 
-### 6. Executar os testes
+### 7. Executar os testes
 
 ```bash
 pytest tests/ -v
@@ -131,7 +171,40 @@ pytest tests/ -v
 
 ---
 
-## Exemplo de saída
+### 🐳 Opcional — Subindo o Oracle com Docker Compose
+
+Caso não tenha uma instância Oracle disponível, você pode subir o **Oracle Database 21c Express Edition** localmente usando Docker.
+
+**Pré-requisito:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e em execução.
+
+**1. Iniciar o container:**
+```bash
+docker compose up -d
+```
+
+**2. Aguardar a inicialização** (~60 segundos). Acompanhe o log:
+```bash
+docker logs -f oracle-fiap
+```
+Aguarde a mensagem `DATABASE IS READY TO USE!` antes de prosseguir.
+
+**3. Configurar o `.env`** com as credenciais do container:
+```
+ORACLE_USER=system
+ORACLE_PASSWORD=fiap_password
+ORACLE_DSN=localhost:1521/XEPDB1
+```
+
+**4. Parar o container** (preserva os dados no volume `oracle-data`):
+```bash
+docker compose down
+```
+
+> Para remover também o volume de dados: `docker compose down -v`
+
+---
+
+### Exemplo de saída
 
 ```
 ╔══════════════════════════════════════════════════════╗
@@ -176,42 +249,6 @@ Qtd. de alertas (>10%)    : 3
 
 ---
 
-## Estrutura de pastas
+## 📋 Licença
 
-```
-farm-tech-solutions/
-├── src/
-│   ├── db/
-│   │   ├── connection.py        # Conexão Oracle via oracledb + python-dotenv
-│   │   └── schema.sql           # DDL: tabelas field, harvester, harvest_record
-│   ├── models/
-│   │   ├── field.py             # Classe Field (talhão)
-│   │   ├── harvester.py         # Classe Harvester (colhedora)
-│   │   └── harvest_record.py    # Classe HarvestRecord + cálculo de perdas
-│   ├── services/
-│   │   ├── field_service.py     # CRUD de talhões
-│   │   ├── harvester_service.py # CRUD de colhedoras
-│   │   └── harvest_service.py   # CRUD de registros + agrupamentos
-│   ├── reports/
-│   │   └── report.py            # Relatórios por colhedora, talhão, operador e resumo
-│   └── utils/
-│       ├── display.py           # Funções de saída colorida (sucesso, erro, alerta)
-│       ├── file_io.py           # Leitura/gravação de JSON e exportação de .txt
-│       └── validation.py        # Leitura validada de float, int, data e texto
-├── tests/                       # Suíte pytest (sem dependência de Oracle)
-├── data/
-│   └── records.json             # Exportação local dos registros
-├── .env.example                 # Template de variáveis de ambiente
-├── requirements.txt
-└── README.md
-```
-
----
-
-## Integrantes do grupo
-
-| Nome                 | RM          |
-|----------------------|-------------|
-| _Geovani Nepomoceno_ | _rm570373_          |
-
-# farm-tech-solutions-2-6
+<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/agodoi/template">MODELO GIT FIAP</a> por <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://fiap.com.br">Fiap</a> está licenciado sobre <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution 4.0 International</a>.</p>
